@@ -86,8 +86,16 @@ class ExampleGetRestResource extends ResourceBase {
     if (!$this->currentUser->hasPermission('access content')) {
       throw new AccessDeniedHttpException();
     }
+    $entities = \Drupal::entityTypeManager()
+      ->getStorage('node')
+      ->loadMultiple();
+    foreach ($entities as $entity) {
+      $result[$entity->id()] = $entity->title->value;
+    }
 
-    return new ResourceResponse("Implement REST State GET!");
+    $response = new ResourceResponse($result);
+    $response->addCacheableDependency($result);
+    return $response;
   }
 
 }
