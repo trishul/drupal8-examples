@@ -3,14 +3,16 @@
 namespace Drupal\batch_example;
 
 
+use Drupal\node\Entity\Node;
+
 class DeleteNode {
 
-  public static function deleteNodeExample($entities, &$context){
+  public static function deleteNodeExample($nids, &$context){
     $message = 'Deleting Node...';
     $results = array();
-    foreach ($entities as $entity) {
-      $results[] = \Drupal::entityTypeManager()
-        ->getStorage('node')->delete($entity);
+    foreach ($nids as $nid) {
+      $node = Node::load($nid);
+      $results[] = $node->delete();
     }
     $context['message'] = $message;
     $context['results'] = $results;
